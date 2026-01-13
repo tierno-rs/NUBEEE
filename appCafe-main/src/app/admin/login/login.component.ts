@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { UserService } from '../../pages/user/data-access/user.service';
+import { UserService } from '../../services/user.service'; 
 import { AlertService } from '../../shared/data-access/alert.service';
 
 @Component({
@@ -13,10 +13,9 @@ import { AlertService } from '../../shared/data-access/alert.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-
-  userService = inject(UserService)
-  alertService = inject(AlertService)
-  router = inject(Router)
+  private userService = inject(UserService);
+  private alertService = inject(AlertService);
+  private router = inject(Router);
 
   loginForm: FormGroup;
 
@@ -27,31 +26,27 @@ export class LoginComponent {
     });
   }
 
-  get email() {
-    return this.loginForm.get('email')!;
-  }
-  
-  get password() {
-    return this.loginForm.get('password')!;
-  }
+  get email() { return this.loginForm.get('email')!; }
+  get password() { return this.loginForm.get('password')!; }
 
   onSubmit() {
     if (this.loginForm.invalid) return;
 
-    const formData = new FormData();
-    formData.append('email', this.loginForm.value.email);
-    formData.append('password', this.loginForm.value.password);
+    const { email, password } = this.loginForm.value;
 
-    this.userService.login(formData).subscribe(
-      (response) => {
-        this.alertService.toast('Login existoso')
-        this.router.navigate(['page'])
+    this.userService.login(email, password).subscribe({
+      next: (response) => {
+        // Mostramos la notificación de éxito
+        this.alertService.toast('Login exitoso');
+        
+        // CORRECCIÓN IMPLEMENTADA: 
+        // Navegamos a '/page/dashboard' en singular para coincidir con app.routes.ts
+        this.router.navigate(['/page/dashboard']); 
       },
-      (error) => {
-        console.log(error)
-        this.alertService.toast('Login fallido', 'error')
+      error: (error) => {
+        console.error('Error en el login:', error);
+        this.alertService.toast('Error en los datos', 'error');
       }
-    )
-    
+    });
   }
 }

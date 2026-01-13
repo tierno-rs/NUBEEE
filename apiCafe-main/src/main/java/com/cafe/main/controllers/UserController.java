@@ -1,24 +1,16 @@
 package com.cafe.main.controllers;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*; // Simplifica las importaciones
 import com.cafe.main.models.UserModel;
 import com.cafe.main.services.UserService;
 
 @RestController
 @RequestMapping(path = "user")
+@CrossOrigin(origins = "http://localhost:4200") // 1. Agrega esto para permitir Angular
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -49,7 +41,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestParam String email, @RequestParam String password) {
+        // Este método será llamado por tu formulario morado de Login
         return userService.login(email, password);
     }
-
 }
